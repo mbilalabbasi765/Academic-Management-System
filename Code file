@@ -1,0 +1,499 @@
+#include <iostream>
+
+#include <vector>
+
+#include <string>
+
+#include <fstream>
+
+#include <iomanip>
+
+using namespace std;
+
+
+// ---------------- Structures ----------------
+
+struct Student {
+
+    int id;
+
+    string name;
+
+    string department;
+
+};
+
+
+struct Course {
+
+    int id;
+
+    string name;
+
+    int credits;
+
+};
+
+
+struct Grade {
+
+    int studentId;
+
+    int courseId;
+
+    float marks;
+
+};
+
+
+// ---------------- Global Vectors ----------------
+
+vector<Student> students;
+
+vector<Course> courses;
+
+vector<Grade> grades;
+
+
+// ---------------- File Handling ----------------
+
+const string studentFile = "students.txt";
+
+const string courseFile = "courses.txt";
+
+const string gradeFile = "grades.txt";
+
+
+// ---------------- Utility Functions ----------------
+
+void loadStudents() {
+
+    ifstream fin(studentFile);
+
+    if (!fin) {
+
+        cout << "Student file not found, starting fresh.\n";
+
+        return;
+
+    }
+
+    Student s;
+
+    while (fin >> s.id) {
+
+        fin.ignore(); // clear newline after reading id
+
+        getline(fin, s.name);
+
+        getline(fin, s.department);
+
+        students.push_back(s);
+
+    }
+
+    fin.close();
+
+}
+
+
+void saveStudents() {
+
+    ofstream fout(studentFile);
+
+    for (auto s : students) {
+
+        fout << s.id << "\n" << s.name << "\n" << s.department << "\n";
+
+    }
+
+    fout.close();
+
+}
+
+
+void loadCourses() {
+
+    ifstream fin(courseFile);
+
+    if (!fin) {
+
+        cout << "Course file not found, starting fresh.\n";
+
+        return;
+
+    }
+
+    Course c;
+
+    while (fin >> c.id) {
+
+        fin.ignore();  // clear newline after reading id
+
+        getline(fin, c.name);
+
+        fin >> c.credits;
+
+        fin.ignore();  // clear newline after reading credits
+
+        courses.push_back(c);
+
+    }
+
+    fin.close();
+
+}
+
+
+void saveCourses() {
+
+    ofstream fout(courseFile);
+
+    for (auto c : courses) {
+
+        fout << c.id << "\n" << c.name << "\n" << c.credits << "\n";
+
+    }
+
+    fout.close();
+
+}
+
+
+void loadGrades() {
+
+    ifstream fin(gradeFile);
+
+    if (!fin) {
+
+        cout << "Grade file not found, starting fresh.\n";
+
+        return;
+
+    }
+
+    Grade g;
+
+    while (fin >> g.studentId >> g.courseId >> g.marks) {
+
+        grades.push_back(g);
+
+    }
+
+    fin.close();
+
+}
+
+
+void saveGrades() {
+
+    ofstream fout(gradeFile);
+
+    for (auto g : grades) {
+
+        fout << g.studentId << " " << g.courseId << " " << g.marks << "\n";
+
+    }
+
+    fout.close();
+
+}
+
+
+// ---------------- Academic Functions ----------------
+
+void addStudent() {
+
+    Student s;
+
+    cout << "Enter Student ID: ";
+
+    cin >> s.id;
+
+    cin.ignore();  // clear newline before getline
+
+    cout << "Enter Student Name: ";
+
+    getline(cin, s.name);
+
+    cout << "Enter Department: ";
+
+    getline(cin, s.department);
+
+    students.push_back(s);
+
+    saveStudents();
+
+    cout << "Student Added Successfully!\n";
+
+}
+
+
+void addCourse() {
+
+    Course c;
+
+    cout << "Enter Course ID: ";
+
+    cin >> c.id;
+
+    cin.ignore();  // clear newline before getline
+
+    cout << "Enter Course Name: ";
+
+    getline(cin, c.name);
+
+    cout << "Enter Credits: ";
+
+    cin >> c.credits;
+
+    cin.ignore();  // clear newline after credits input
+
+    courses.push_back(c);
+
+    saveCourses();
+
+    cout << "Course Added Successfully!\n";
+
+}
+
+
+void addGrade() {
+
+    Grade g;
+
+    cout << "Enter Student ID: ";
+
+    cin >> g.studentId;
+
+    cout << "Enter Course ID: ";
+
+    cin >> g.courseId;
+
+    cout << "Enter Marks (0-100): ";
+
+    cin >> g.marks;
+
+
+    if (g.marks < 0 || g.marks > 100) {
+
+        cout << "Invalid Marks! Must be 0-100.\n";
+
+        return;
+
+    }
+
+
+    grades.push_back(g);
+
+    saveGrades();
+
+    cout << "Grade Added Successfully!\n";
+
+}
+
+
+// Display functions
+
+void displayStudents() {
+
+    cout << "\n--- Students ---\n";
+
+    cout << left << setw(10) << "ID" << setw(25) << "Name" << setw(20) << "Department" << endl;
+
+    cout << string(55, '-') << endl;
+
+    for (auto s : students) {
+
+        cout << left << setw(10) << s.id << setw(25) << s.name << setw(20) << s.department << endl;
+
+    }
+
+}
+
+
+void displayCourses() {
+
+    cout << "\n--- Courses ---\n";
+
+    cout << left << setw(10) << "ID" << setw(25) << "Name" << setw(10) << "Credits" << endl;
+
+    cout << string(45, '-') << endl;
+
+    for (auto c : courses) {
+
+        cout << left << setw(10) << c.id << setw(25) << c.name << setw(10) << c.credits << endl;
+
+    }
+
+}
+
+
+void displayGrades() {
+
+    cout << "\n--- Grades ---\n";
+
+    cout << left << setw(12) << "StudentID" << setw(10) << "CourseID" << setw(10) << "Marks" << endl;
+
+    cout << string(35, '-') << endl;
+
+    for (auto g : grades) {
+
+        cout << left << setw(12) << g.studentId << setw(10) << g.courseId << setw(10) << g.marks << endl;
+
+    }
+
+}
+
+
+// GPA Calculation (simple weighted average method)
+
+void calculateGPA() {
+
+    int id;
+
+    cout << "Enter Student ID to calculate GPA: ";
+
+    cin >> id;
+
+    float totalMarks = 0;
+
+    int totalCredits = 0;
+
+
+    for (auto g : grades) {
+
+        if (g.studentId == id) {
+
+            for (auto c : courses) {
+
+                if (c.id == g.courseId) {
+
+                    totalMarks += g.marks * c.credits;
+
+                    totalCredits += c.credits;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    if (totalCredits == 0) {
+
+        cout << "No courses found for this student.\n";
+
+        return;
+
+    }
+
+
+    float gpa = totalMarks / totalCredits;
+
+    cout << "GPA for Student ID " << id << " is: " << fixed << setprecision(2) << gpa/20 << " /5.0\n";
+
+}
+
+
+// Search Student by ID
+
+void searchStudent() {
+
+    int id;
+
+    cout << "Enter Student ID to search: ";
+
+    cin >> id;
+
+    for (auto s : students) {
+
+        if (s.id == id) {
+
+            cout << "Found: " << s.name << " | " << s.department << endl;
+
+            return;
+
+        }
+
+    }
+
+    cout << "Student not found!\n";
+
+}
+
+
+// ---------------- Main Menu ----------------
+
+int main() {
+
+    loadStudents();
+
+    loadCourses();
+
+    loadGrades();
+
+
+    int choice;
+
+    do {
+
+        cout << "\n====== UET Academic Management System ======\n";
+
+        cout << "1. Add Student\n";
+
+        cout << "2. Add Course\n";
+
+        cout << "3. Add Grade\n";
+
+        cout << "4. Display Students\n";
+
+        cout << "5. Display Courses\n";
+
+        cout << "6. Display Grades\n";
+
+        cout << "7. Search Student\n";
+
+        cout << "8. Calculate GPA\n";
+
+        cout << "0. Exit\n";
+
+        cout << "Enter your choice: ";
+
+        cin >> choice;
+
+        cin.ignore();  // clear newline before next input
+
+
+        switch(choice) {
+
+            case 1: addStudent(); break;
+
+            case 2: addCourse(); break;
+
+            case 3: addGrade(); break;
+
+            case 4: displayStudents(); break;
+
+            case 5: displayCourses(); break;
+
+            case 6: displayGrades(); break;
+
+            case 7: searchStudent(); break;
+
+            case 8: calculateGPA(); break;
+
+            case 0: cout << "Exiting Program...\n"; break;
+
+            default: cout << "Invalid Choice!\n";
+
+        }
+
+    } while(choice != 0);
+
+
+    return 0;
+
+}
