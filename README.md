@@ -119,7 +119,6 @@ Removes a student record from the system.
 
 
 
-<img width="2689" height="1134" alt="mermaid-diagram" src="https://github.com/user-attachments/assets/5423904a-3abe-4828-b682-2ba5e2a2e1a3" />
 
 
 	  
